@@ -6,10 +6,12 @@ import store from './store'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
-import login from './views/login.vue'
+import Header from './components/Header.vue'
+
 
 Vue.config.productionTip = false
 
+Vue.component(Header);
 Vue.use(ElementUI);
 
 new Vue({

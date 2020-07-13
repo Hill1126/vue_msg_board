@@ -1,8 +1,27 @@
 <template>
   <div id="app">
+    <HeaderBar ></HeaderBar>
     <router-view/>
+    {{msg}}
   </div>
 </template>
+
+
+<script>
+import HeaderBar from './components/Header'
+export default {
+  components: {
+    HeaderBar,
+  },
+  data() {
+    return {
+      msg : '你好',
+    }
+  }
+}
+</script>
+
+
 
 <style lang="less">
 #app {
