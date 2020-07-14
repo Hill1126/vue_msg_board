@@ -1,8 +1,13 @@
 <template>
   <div id="app">
-    <HeaderBar ></HeaderBar>
-    <router-view/>
-    {{msg}}
+    <el-container>
+      <el-header class="header">
+        <HeaderBar ></HeaderBar>
+      </el-header>
+      <el-main> <router-view/>  </el-main>
+    </el-container>
+     <el-footer>{{msg}}</el-footer>
+
   </div>
 </template>
 
@@ -31,7 +36,6 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
-
 #nav {
   padding: 30px;
 
