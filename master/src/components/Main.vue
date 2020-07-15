@@ -20,15 +20,15 @@
               class="textarea"
             >
             </el-input>
+            <el-button type="primary" round style=" float:right;margin-top: 5px;">提交留言</el-button>
           </el-col>
         </el-row>
-
         <el-row
           style="background:#eeeeee"
           type="flex"
           justify="center"
         >
-          <el-col :span="15">
+          <el-col :span="18">
             <el-card
               shadow="never"
               v-for="heading in headings"
@@ -154,6 +154,11 @@ export default {
   float:right; font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
   font-size: 16px;
   color: #000000;
+}
+
+.el-button{
+  float:"right";
+  margin-block: 5px;
 }
 .item {
   padding: 18px 0;
