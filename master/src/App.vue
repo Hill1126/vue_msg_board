@@ -1,12 +1,11 @@
 <template>
   <div id="app">
     <el-container>
-      <el-header class="header">
-        <HeaderBar ></HeaderBar>
-      </el-header>
-      <el-main> <router-view/>  </el-main>
+      <el-main>
+         <Main></Main> 
+      </el-main>
     </el-container>
-     <el-footer>{{msg}}</el-footer>
+   
 
   </div>
 </template>
@@ -14,9 +13,11 @@
 
 <script>
 import HeaderBar from './components/Header'
+import Main from './components/Main'
 export default {
   components: {
     HeaderBar,
+    Main,
   },
   data() {
     return {
