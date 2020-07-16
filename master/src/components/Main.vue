@@ -4,7 +4,7 @@
       <el-header class="header-bar">
         <HeaderBar></HeaderBar>
       </el-header>
-      <el-main  style=" margin-top: 20px;">
+      <el-main style=" margin-top: 20px;">
         <el-row
           style="height:280px;background:#eeeeee"
           type="flex"
@@ -20,7 +20,12 @@
               class="textarea"
             >
             </el-input>
-            <el-button type="primary" round style=" float:right;margin-top: 5px;">提交留言</el-button>
+            <el-button
+              type="primary"
+              round
+              style=" float:right;margin-top: 5px;"
+              @click="postComment()"
+            >提交留言</el-button>
           </el-col>
         </el-row>
         <el-row
@@ -34,27 +39,32 @@
               v-for="heading in headings"
               :key=heading
             >
-              <h2>{{heading}}</h2>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh.</p>
-              <el-button size="small">View details >></el-button>
-            </el-card>
-          </el-col>
-        </el-row>
-
-        <el-row
-          style="background:#eeeeee"
-          type="flex"
-          justify="center"
-        >
-          <el-col :span="15">
-            <el-card
-              shadow="never"
-              v-for="heading in headings"
-              :key=heading
-            >
-              <h2>{{heading}}</h2>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh.</p>
-              <el-button size="small">View details >></el-button>
+              <el-row>
+                <div class="msg-bar">
+                  <img
+                    class="avatar"
+                    v-bind:src="url"
+                  >
+                  <span>{{heading}}</span>
+                </div>
+              </el-row>
+              <el-row>
+                <span>{{msg[0]}}</span>
+              </el-row>
+              <el-row class="too-bar">
+                <el-button-group >
+                  <el-button
+                    type="primary"
+                    icon="el-icon-edit"
+                    size="small"
+                  ></el-button>
+                  <el-button
+                    type="danger"
+                    icon="el-icon-delete"
+                    size="small"
+                  ></el-button>
+                </el-button-group>
+              </el-row>
             </el-card>
           </el-col>
         </el-row>
@@ -87,77 +97,98 @@ export default {
         "5Heading",
         "6Heading"
       ],
+      msg: [
+        "longlonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglong",
+        "shortshort"
+      ],
       textarea: "",
       welcome: "Vue.js,Element-UI",
-      pj_name: "Project Name"
+      pj_name: "Project Name",
+      url:
+        "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
     };
   },
   components: {
     HeaderBar
   },
   methods: {
- 
-
-    submitForm(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          alert(
-            "Name:" +
-              this.nameValidateForm.name +
-              ";Password:" +
-              this.nameValidateForm.password
-          );
-          // console.log(this.nameValidateForm.name);
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
-      });
-    },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+    },
+    postComment(){
+      alert(this.textarea);
     }
   }
 };
 </script>
 
 <style scoped>
-.header-bar{
- position: fixed;
- z-index: 999;
+.header-bar {
+  position: fixed;
+  z-index: 999;
 }
 
 .el-card {
   background: #fbfbfb;
-  width: 300px;
+  width: 900px;
   display: inline-block;
   margin: 0.3em;
   border-radius: 20px;
 }
 .grid-content {
-  /* background: rgb(14, 214, 131); */
+  background: rgb(14, 214, 131);
   border-radius: 4px;
   min-height: 80px;
 }
 .text {
   font-size: 14px;
 }
+.msg-bar {
+  padding: 10px;
+}
+.msg-bar >>> span {
+  float: left;
+  margin-top: 5px;
+}
+span {
+  word-break: normal;
+  width: auto;
+  display: block;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow: hidden;
+  text-align: left;
+}
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  float: left;
+}
 .textarea >>> .el-textarea__inner {
   resize: none;
-  
+
   border-radius: 5px;
   height: 150px;
- 
+
   margin-top: 20px;
   padding: 0;
   line-height: 1.5em;
-  float:right; font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+  float: right;
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
   font-size: 16px;
   color: #000000;
 }
-
-.el-button{
-  float:"right";
+.too-bar >>> .el-button-group{
+  float:right;  
+  margin-bottom: 5px;
+}
+.too-bar >>> .el-button-group{
+  float:right;  
+  margin-bottom: 5px;
+}
+.el-button {
+  float: "right";
   margin-block: 5px;
 }
 .item {

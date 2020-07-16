@@ -16,7 +16,7 @@
                     <el-submenu index="3"  class="item" >
                         <template slot="title"  class="item">{{name}}</template>
                         <el-menu-item class="subItem" index="3-1">忘记密码</el-menu-item>
-                    </el-submenu>
+                    </el-submenu>             
                     <img v-bind:src="url" v-bind:alt="name">
                 </el-menu>
             </div>
