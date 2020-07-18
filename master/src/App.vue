@@ -52,4 +52,14 @@ export default {
     }
   }
 }
+
+</style>
+<style >
+
+.el-popover{
+
+  min-width: 80px !important;
+}
+
+
 </style>

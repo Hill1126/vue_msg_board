@@ -28,6 +28,7 @@
             >提交留言</el-button>
           </el-col>
         </el-row>
+
         <el-row
           style="background:#eeeeee"
           type="flex"
@@ -36,7 +37,7 @@
           <el-col :span="18">
             <el-card
               shadow="never"
-              v-for="heading in headings"
+              v-for="(heading,i) in headings"
               :key=heading
             >
               <el-row>
@@ -45,26 +46,52 @@
                     class="avatar"
                     v-bind:src="url"
                   >
-                  <span>{{heading}}</span>
+                  <el-link
+                    type="primary"
+                    :underline="false"
+                  >{{heading}}</el-link>
                 </div>
               </el-row>
               <el-row>
-                <span>{{msg[0]}}</span>
+                <span class="context">{{msg[i]}}</span>
               </el-row>
               <el-row class="too-bar">
-                <el-button-group >
+                <!-- 左边工具栏 -->
+
+                <el-button
+                  size="mini"
+                  plain
+                  @click="show2 = !show2"
+                >查看评论 共{{headings.length}}条</el-button>
+                <!-- 右边工具栏 -->
+                <el-popover
+                  placement="right"
+                  min-width="50"
+                  width="50"
+                >
+                  <el-popconfirm
+                    placement="top"
+                    confirmButtonText='好的'
+                    cancelButtonText='取消'
+                    icon="el-icon-info"
+                    iconColor="red"
+                    title="删除留言将与评论一并删除，确定吗？"
+                  >
+                    <el-button
+                      style="border: none;"
+                      slot="reference"
+                      size="mini"
+                      plain
+                    >删除</el-button>
+                  </el-popconfirm>
                   <el-button
-                    type="primary"
-                    icon="el-icon-edit"
-                    size="small"
+                    size="mini"
+                    slot="reference"
+                    icon="el-icon-more"
                   ></el-button>
-                  <el-button
-                    type="danger"
-                    icon="el-icon-delete"
-                    size="small"
-                  ></el-button>
-                </el-button-group>
+                </el-popover>
               </el-row>
+              <Comment v-bind:show2="show2"></Comment>
             </el-card>
           </el-col>
         </el-row>
@@ -86,14 +113,15 @@
 
 <script>
 import HeaderBar from "./Header";
+import Comment from "./Comment";
 export default {
   data() {
     return {
       headings: [
-        "1Heading",
-        "2Heading",
-        "3Heading",
-        "4Heading",
+        "HILL",
+        "xujunfeng",
+        "的说法是",
+        "hlll",
         "5Heading",
         "6Heading"
       ],
@@ -101,6 +129,7 @@ export default {
         "longlonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglong",
         "shortshort"
       ],
+      show2: true,
       textarea: "",
       welcome: "Vue.js,Element-UI",
       pj_name: "Project Name",
@@ -109,18 +138,20 @@ export default {
     };
   },
   components: {
-    HeaderBar
+    HeaderBar,
+    Comment
   },
   methods: {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
-    postComment(){
+    postComment() {
       alert(this.textarea);
     }
   }
 };
 </script>
+
 
 <style scoped>
 .header-bar {
@@ -146,11 +177,13 @@ export default {
 .msg-bar {
   padding: 10px;
 }
-.msg-bar >>> span {
-  float: left;
-  margin-top: 5px;
+
+.el-link.el-link--primary {
+  padding-top: 10px;
+  margin-left: 10px;
+  float: left !important;
 }
-span {
+.context {
   word-break: normal;
   width: auto;
   display: block;
@@ -158,6 +191,9 @@ span {
   word-wrap: break-word;
   overflow: hidden;
   text-align: left;
+  padding-top: 10px;
+  padding-left: 15px;
+  padding-bottom: 15px;
 }
 .avatar {
   width: 30px;
@@ -179,14 +215,13 @@ span {
   font-size: 16px;
   color: #000000;
 }
-.too-bar >>> .el-button-group{
-  float:right;  
+.too-bar >>> button {
+  background: #fbfbfb;
+  border: none;
+  float: right;
   margin-bottom: 5px;
 }
-.too-bar >>> .el-button-group{
-  float:right;  
-  margin-bottom: 5px;
-}
+
 .el-button {
   float: "right";
   margin-block: 5px;
