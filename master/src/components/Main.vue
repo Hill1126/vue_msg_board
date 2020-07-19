@@ -28,13 +28,14 @@
             >提交留言</el-button>
           </el-col>
         </el-row>
-
+        <!-- 留言展示框 -->
         <el-row
           style="background:#eeeeee"
           type="flex"
           justify="center"
         >
           <el-col :span="18">
+            <!-- 单个留言卡片 -->
             <el-card
               shadow="never"
               v-for="(heading,i) in headings"
@@ -59,6 +60,7 @@
                 <!-- 左边工具栏 -->
 
                 <el-button
+                  style="float:left"
                   size="mini"
                   plain
                   @click="show2 = !show2"
@@ -91,12 +93,20 @@
                   ></el-button>
                 </el-popover>
               </el-row>
+              <!-- 评论展示框 -->
               <Comment v-bind:show2="show2"></Comment>
             </el-card>
           </el-col>
         </el-row>
-
-        <el-row
+        <el-row>
+          <el-pagination
+            page-size=6
+            layout="prev, pager, next"
+            :total="headings.length"
+          >
+          </el-pagination>
+        </el-row>
+        <!-- <el-row
           style="background:#eeeeee"
           type="flex"
           justify="center"
@@ -105,7 +115,7 @@
             <el-divider></el-divider>
             <p>© 2020 Company, Inc.</p>
           </el-col>
-        </el-row>
+        </el-row> -->
       </el-main>
     </el-container>
   </div>
@@ -196,8 +206,8 @@ export default {
   padding-bottom: 15px;
 }
 .avatar {
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   float: left;
 }
