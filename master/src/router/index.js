@@ -29,6 +29,21 @@ const routes = [
     component: () => import('../views/login.vue')
   },
   {
+    path: '/myMsg',
+    name: 'myMsg',
+    component: () => import('../views/MyMsg.vue')
+  },
+  {
+    path: '/myReply',
+    name: 'myReply',
+    component: () => import('../views/MyReply.vue')
+  },
+  {
+    path: '/person',
+    name: 'Person',
+    component: () => import('../views/Person.vue')
+  },
+  {
     path: '*',
     name: 'notfound',
     redirect: '/notfound',

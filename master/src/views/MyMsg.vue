@@ -1,31 +1,32 @@
 <template>
-  <div id="Main">
+
+  <div>
+    <Header></Header>
     <el-container>
-  
+
       <el-main style=" margin-top: 20px;">
         <el-row
-          style="height:280px;background:#eeeeee"
+          style="background:#eeeeee"
           type="flex"
           justify="center"
         >
-          <el-col :span="12">
+          <el-col
+            :span="12"
+            style="margin-top: 30px "
+          >
+            <label>搜索</label>
             <el-input
-              type="textarea"
-              placeholder="请输入留言内容"
-              v-model="textarea"
-              maxlength="512"
-              show-word-limit
-              class="textarea"
-            >
-            </el-input>
+              style="width:80%"
+              v-model="search"
+              placeholder="请输入搜索内容"
+            ></el-input>
             <el-button
-              type="primary"
-              round
-              style=" float:right;margin-top: 5px;"
-              @click="postComment()"
-            >提交留言</el-button>
+              icon="el-icon-search"
+              circle
+            ></el-button>
           </el-col>
         </el-row>
+
         <!-- 留言展示框 -->
         <el-row
           style="background:#eeeeee"
@@ -56,6 +57,7 @@
               </el-row>
               <el-row class="too-bar">
                 <!-- 左边工具栏 -->
+                <!-- 弹框相关 -->
 
                 <el-button
                   style="float:left"
@@ -64,41 +66,66 @@
                   @click="show2 = !show2"
                 >查看评论 共{{headings.length}}条</el-button>
                 <!-- 右边工具栏 -->
-                <el-popover
-                  placement="right"
-                  min-width="50"
-                  width="50"
-                >
-                  <el-popconfirm
-                    placement="top"
-                    confirmButtonText='好的'
-                    cancelButtonText='取消'
-                    icon="el-icon-info"
-                    iconColor="red"
-                    title="删除留言将与评论一并删除，确定吗？"
+                <!-- 编辑弹框 -->
+                <div id="windows">
+
+                  <el-dialog
+                    title="输入修改内容"
+                    :visible.sync="open"
+                    :before-close="handleClose"
                   >
-                    <el-button
-                      style="border: none;"
-                      slot="reference"
-                      size="mini"
-                      plain
-                    >删除</el-button>
-                  </el-popconfirm>
+                    <el-input
+                      type="textarea"
+                      placeholder="请修改内容"
+                      v-model="text"
+                      maxlength="512"
+                      show-word-limit
+                      class="textarea"
+                    >
+                    </el-input>
+                    <div
+                      slot="footer"
+                      class="dialog-footer"
+                    >
+                      <el-button
+                        type="primary"
+                        @click="open = false"
+                      >确 定</el-button>
+                      <el-button @click="open = false">取 消</el-button>
+
+                    </div>
+                  </el-dialog>
+
+                </div>
+                <el-popconfirm
+                  placement="top"
+                  confirmButtonText='好的'
+                  cancelButtonText='取消'
+                  iconColor="red"
+                  title="删除留言将与评论一并删除，确定吗？"
+                >
                   <el-button
-                    size="mini"
                     slot="reference"
-                    icon="el-icon-more"
-                  ></el-button>
-                </el-popover>
+                    type="text"
+                  >删除</el-button>
+                </el-popconfirm>
+                <el-button
+                  style="margin-right:5px"
+                  type="text"
+                  @click="open=true"
+                >编辑</el-button>
+
               </el-row>
               <!-- 评论展示框 -->
-              <Comment v-bind:show2="show2"></Comment>
+              <!-- <Comment v-bind:show2="show2"></Comment> -->
             </el-card>
           </el-col>
         </el-row>
-        <el-row  style="height:280px;background:#eeeeee"
+        <el-row
+          style="height:280px;background:#eeeeee"
           type="flex"
-          justify="center">
+          justify="center"
+        >
           <el-pagination
             page-size:6
             layout="prev, pager, next"
@@ -106,24 +133,19 @@
           >
           </el-pagination>
         </el-row>
-        <!-- <el-row
-          style="background:#eeeeee"
-          type="flex"
-          justify="center"
-        >
-          <el-col :span="15">
-            <el-divider></el-divider>
-            <p>© 2020 Company, Inc.</p>
-          </el-col>
-        </el-row> -->
       </el-main>
-      
+
     </el-container>
+
   </div>
+
 </template>
 
 <script>
-
+// @ is an alias to /src
+import Header from "../components/Header";
+import Main from "../components/Main";
+import EditWindow from "../components/Edit";
 
 export default {
   data() {
@@ -141,20 +163,26 @@ export default {
         "shortshort"
       ],
       show2: true,
-      textarea: "",
-      welcome: "Vue.js,Element-UI",
-      pj_name: "Project Name",
+      open: false,
+      text: "",
+      search: "",
       url:
         "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
     };
   },
-
+  name: "MyMsg",
+  components: {
+    Header,
+    Main,
+    EditWindow
+  },
   methods: {
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-    },
-    postComment() {
-      alert(this.textarea);
+    handleClose(done) {
+      this.$confirm("您还没有编辑完成，确认关闭？")
+        .then(_ => {
+          done();
+        })
+        .catch(_ => {});
     }
   }
 };
@@ -162,8 +190,6 @@ export default {
 
 
 <style scoped>
-
-
 .el-card {
   background: #fbfbfb;
   width: 900px;
@@ -208,20 +234,16 @@ export default {
 }
 .textarea >>> .el-textarea__inner {
   resize: none;
-
   border-radius: 5px;
   height: 150px;
-
-  margin-top: 20px;
-  padding: 0;
+  /* width:80%; */
   line-height: 1.5em;
-  float: right;
   font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
   font-size: 16px;
   color: #000000;
 }
+
 .too-bar >>> button {
-  background: #fbfbfb;
   border: none;
   float: right;
   margin-bottom: 5px;

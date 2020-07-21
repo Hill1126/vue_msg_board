@@ -1,5 +1,22 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
-  </div>
+  <el-container>
+    <el-main>
+      <Main></Main>
+    </el-main>
+  </el-container>
 </template>
+
+<script>
+
+import Main from '../components/Main'
+export default {
+  components: {
+    Main,
+  },
+  data() {
+    return {
+      msg : '你好',
+    }
+  }
+}
+</script>
