@@ -1,6 +1,6 @@
 <template>
-  <div class="login">
-    <el-row type="flex" justify="center">
+  <div class="register">
+   <el-row type="flex" justify="center">
       <!-- justify 对齐方式 -->
       <el-col :span="6">
         <div class="grid-content">
@@ -51,9 +51,10 @@
 </template>
 
 <script>
-import Vue from "vue";
 
 export default {
+  name: "Register",
+ 
   data() {
     var notContainBlank = (rule, value, callback) => {
       if (!value) {
@@ -139,7 +140,8 @@ export default {
   width: 300px;
 }
 .title {
-  font-family:  "微软雅黑";
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
   margin-top: 50%;
 }
 </style>

@@ -104,7 +104,7 @@ header {
   top: 0px;
   box-sizing: border-box;
   padding: 0px;
-  background-color: #000000;
+  background-color: #409EFF;
   height: 60px;
   display: flex;
   justify-content: space-between;
@@ -112,7 +112,7 @@ header {
   z-index: 999;
 
   .logo {
-    color: #fff;
+    color:  #409EFF;
     height: 60px;
     img {
       width: 50px;
