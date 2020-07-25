@@ -1,6 +1,9 @@
 <template>
   <div class="login">
-    <el-row type="flex" justify="center">
+    <el-row
+      type="flex"
+      justify="center"
+    >
       <!-- justify 对齐方式 -->
       <el-col :span="6">
         <div class="grid-content">
@@ -9,7 +12,10 @@
       </el-col>
     </el-row>
 
-    <el-row type="flex" justify="center">
+    <el-row
+      type="flex"
+      justify="center"
+    >
       <!-- justify 对齐方式 -->
       <el-col :span="6">
         <el-card shadow="always">
@@ -24,7 +30,10 @@
             :rules="rules"
           >
             <!-- 用户名 -->
-            <el-form-item label="账号" prop="account">
+            <el-form-item
+              label="账号"
+              prop="account"
+            >
               <el-input
                 placeholder="请输入账号"
                 type="text"
@@ -34,13 +43,23 @@
             </el-form-item>
 
             <!-- 密码 -->
-            <el-form-item label="密码" prop="password">
-              <el-input placeholder="请输入密码" v-model="ruleForm.password" show-password></el-input>
+            <el-form-item
+              label="密码"
+              prop="password"
+            >
+              <el-input
+                placeholder="请输入密码"
+                v-model="ruleForm.password"
+                show-password
+              ></el-input>
             </el-form-item>
 
             <!-- 按钮 -->
-            <el-form-item>
-              <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+            <el-form-item prop="account">
+              <el-button
+                type="primary"
+                @click="submitForm('ruleForm')"
+              >提交</el-button>
               <el-button @click="resetForm('ruleForm')">重置</el-button>
             </el-form-item>
           </el-form>
@@ -61,6 +80,7 @@ export default {
       } else if (value.indexOf(" ") !== -1) {
         return callback(new Error("账号不能存在空格"));
       }
+      callback();
     };
     var validatePass = (rule, value, callback) => {
       if (value === "") {
@@ -71,6 +91,7 @@ export default {
         }
         callback();
       }
+      callback();
     };
     return {
       ruleForm: {
@@ -94,11 +115,18 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          alert(
-            "Name:" + this.ruleForm.name + ";Password:" + this.ruleForm.password
-          );
+          const from = this.ruleForm;
+          this.$axios({
+            method: "post",
+            url: "/api/login",
+            data: {
+              account: from.account,
+              password: from.password
+            }
+          }).then(res => {
+            this.$router.push('/');
+          })
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
@@ -120,8 +148,8 @@ export default {
 .el-card {
   border-radius: 20px;
   width: 380px;
-  box-shadow: 0 2px 12px 0 rgb(243, 102, 102); 
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04); 
+  box-shadow: 0 2px 12px 0 rgb(243, 102, 102);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
 }
 .grid-content {
   /* background: rgb(14, 214, 131); */
@@ -139,7 +167,7 @@ export default {
   width: 300px;
 }
 .title {
-  font-family:  "微软雅黑";
+  font-family: "微软雅黑";
   margin-top: 50%;
 }
 </style>

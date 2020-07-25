@@ -53,23 +53,34 @@
           index="3"
           @click="pushTO('/person')"
         >个人中心</el-menu-item>
-        <el-submenu
+
+        
+        <!-- <el-submenu
           index="4"
           class="item"
         >
           <template
             slot="title"
             class="item"
-          >{{name}}</template>
+          >{{userInfo.name}}</template>
           <el-menu-item
             class="subItem"
             index="4-1"
           >忘记密码</el-menu-item>
-        </el-submenu>
-        <img
-          v-bind:src="url"
-          v-bind:alt="name"
+        </el-submenu> -->
+        <el-popover
+    placement="top-start"
+    title="标题"
+    width="200"
+    trigger="hover"
+    content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+    <img
+          v-bind:src="userInfo.avatar"
+          :alt="userInfo.name"
+          slot="reference"
         >
+  </el-popover>
+       
       </el-menu>
 
     </div>
@@ -77,22 +88,37 @@
 
 </template>
 <script>
+import api from "../axios/api";
+
 export default {
   name: "Header",
   data() {
     return {
-      name: "xujunfeng",
       url:
         "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
       fits: ["cover"],
-      activeIndex: "1"
+      activeIndex: "1",
+      userInfo:{},
     };
   },
   methods: {
     pushTO(path) {
       this.$router.push(path);
-    }
-  }
+    },
+    initInfo() {
+      api.getUserInfo().then((res) => {
+        this.userInfo = res.data;
+      });
+    },
+  },
+
+  created() {
+    this.initInfo()
+  },
+  watch: {
+    // 如果路由有变化，会再次执行该方法
+    $route: "initInfo",
+  },
 };
 </script>
 <style lang="less" scoped>
@@ -104,7 +130,7 @@ header {
   top: 0px;
   box-sizing: border-box;
   padding: 0px;
-  background-color: #409EFF;
+  background-color: #409eff;
   height: 60px;
   display: flex;
   justify-content: space-between;
@@ -112,7 +138,7 @@ header {
   z-index: 999;
 
   .logo {
-    color:  #409EFF;
+    color: #409eff;
     height: 60px;
     img {
       width: 50px;
@@ -132,7 +158,7 @@ header {
   .nav {
     float: right;
     .el-menu-demo {
-      width: 500px;
+      width: auto;
       margin: 0 auto;
     }
     .el-menu--horizontal {
@@ -146,7 +172,6 @@ header {
       }
     }
     .item {
-     
       width: 100px;
       float: center;
       border-bottom: 0px solid transparent;
