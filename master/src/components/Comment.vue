@@ -27,6 +27,11 @@
                 icon="el-icon-edit"
                 @click="handleReply(i)"
               >回复</el-link>
+               <el-link
+                v-if="reply.editAuth"
+                icon="el-icon-delete"
+                @click="deleteReply(i)"
+              >删除</el-link>
             </div>
           </div>
         </div>
@@ -72,8 +77,7 @@ import api from "../axios/api";
 
 export default {
   data: () => ({
-    url:
-      "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg",
+  
     show: false,
     currentIndex: 0,
     openEditWindow: false,
@@ -85,6 +89,7 @@ export default {
       default: []
     },
     commentId:String,
+
   },
   watch: {
     show2: {
@@ -124,6 +129,18 @@ export default {
         }).then(res=>{
           this.replyList = res.data.data.replies;
         });
+    },
+    deleteReply(i){
+      console.log(this.commentId);
+      const reply = this.replyList[this.currentIndex];
+      api.deleteReply({
+        commentId:this.commentId,
+        replyId:reply._id,
+      }).then(res => {
+         
+          Message.success('删除回复成功')
+           this.getCommentById(this.commentId);
+        })
     }
   }
 };

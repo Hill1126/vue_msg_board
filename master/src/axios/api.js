@@ -35,7 +35,7 @@ export default {
                     context,
                     toUser: userId,
                 }
-            }).then(res=>{
+            }).then(res => {
                 resolve(res.data)
             }).catch(err => {
                 Message({
@@ -47,14 +47,48 @@ export default {
         });
     },
     // 获取用户信息
-    getUserInfo(){
+    getUserInfo() {
         return new Promise((resolve, reject) => {
             instance.axios({
-                method:"get",
-                url:'/api/user',
-            }).then(res=>{
+                method: "get",
+                url: '/api/user',
+            }).then(res => {
                 resolve(res.data)
             });
         });
+    },
+    // 更新自己的留言
+    updateComment(value) {
+        return new Promise((resolve, reject) => {
+            const { context, commentId } = value;
+            instance.axios({
+                method: "put",
+                url: `/api/comment/${commentId}`,
+                data: {
+                    context,
+                }
+            }).then(res => resolve(res));
+        });
+    },
+    // 删除留言
+    deleteComment(value){
+        return new Promise((resolve, reject) => {
+            const { commentId } = value;
+            instance.axios({
+                method: "delete",
+                url: `/api/comment/${commentId}`,
+            }).then(res => resolve(res));
+        });
+    },
+    // 删除回复
+    deleteReply(value){
+        return new Promise((resolve, reject) => {
+            const { commentId,replyId } = value;
+            instance.axios({
+                method: "delete",
+                url: `/api/reply/${commentId}/${replyId}`,
+            }).then(res => resolve(res));
+        });
     }
+
 }

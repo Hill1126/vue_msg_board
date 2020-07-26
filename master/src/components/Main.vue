@@ -62,7 +62,7 @@
                   style="float:left"
                   size="mini"
                   plain
-                  @click="getReplyList(i)"
+                  @click="showComment(i)"
                 >查看评论 共{{item.replies.length}}条</el-button>
                 <el-button
                   size="mini"
@@ -102,7 +102,7 @@
               <!-- 评论展示框 -->
               <Comment
                 :replyList="item.replies"
-                :show2="openState[i]"
+                :show2="openState[item._id]"
                 :commentId="item._id"
               ></Comment>
             </el-card>
@@ -114,7 +114,8 @@
           justify="center"
         >
           <el-pagination
-            page-size:6
+            @current-change="handleCurrentChange" 
+            :page-size="pageSize"
             layout="prev, pager, next"
             :total="count"
           >
@@ -179,15 +180,19 @@ export default {
       loading: false,
       show2: false,
       currentIndex:0,
+      pageNum:1,
       textarea: "",
       count: 0,
       editText:'',
-      url:
-        "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
+      pageSize:6,
     };
   },
 
   methods: {
+    handleCurrentChange(val) {
+           this.pageNum=val;
+           this.getCommentList();
+       },
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
@@ -212,7 +217,11 @@ export default {
       this.loading = true;
       this.axios({
         method: "get",
-        url: "/api/comment"
+        url: "/api/comment",
+        params:{
+          pageSize:this.pageSize,
+          pageNum:this.pageNum,
+        }
       }).then(res => {
         this.loading = false;
         const data = res.data;
@@ -226,10 +235,11 @@ export default {
             this.loading = false;
       });
     },
-    getReplyList(index) {
+    showComment(index) {
       this.currentIndex = index;
-      const value = this.openState[index];
-      this.$set(this.openState, index, !value);
+      const comment = this.commentList[index]
+      const value = this.openState[comment._id];
+      this.$set(this.openState, comment._id, !value);
     },
     handleReply(index) {
       this.currentIndex = index;
@@ -273,7 +283,7 @@ export default {
   },
 
   created() {
-    this.openState = Array(10).fill(false);
+    // this.openState = Array(10).fill(false);
     this.getCommentList();
   },
   watch: {

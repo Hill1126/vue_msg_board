@@ -14,16 +14,21 @@
             :span="12"
             style="margin-top: 30px "
           >
-            <label>搜索</label>
+
             <el-input
               style="width:80%"
               v-model="search"
               placeholder="请输入搜索内容"
             ></el-input>
             <el-button
+              @click="getCommentList()"
               icon="el-icon-search"
               circle
             ></el-button>
+            <el-button
+              @click="search='';getCommentList()"
+             
+            >重置</el-button>
           </el-col>
         </el-row>
 
@@ -37,23 +42,23 @@
             <!-- 单个留言卡片 -->
             <el-card
               shadow="never"
-              v-for="(heading,i) in headings"
-              :key=heading
+              v-for="(comment,i) in commentList"
+              :key=comment._id
             >
               <el-row>
                 <div class="msg-bar">
                   <img
                     class="avatar"
-                    v-bind:src="url"
+                    v-bind:src="comment.creator.avatar"
                   >
                   <el-link
                     type="primary"
                     :underline="false"
-                  >{{heading}}</el-link>
+                  >{{comment.creator.name}}</el-link>
                 </div>
               </el-row>
               <el-row>
-                <span class="context">{{msg[i]}}</span>
+                <span class="context">{{comment.context}}</span>
               </el-row>
               <el-row class="too-bar">
                 <!-- 左边工具栏 -->
@@ -63,8 +68,8 @@
                   style="float:left"
                   size="mini"
                   plain
-                  @click="show2 = !show2"
-                >查看评论 共{{headings.length}}条</el-button>
+                  @click="showComment(i)"
+                >查看评论 共{{comment.replies.length}}条</el-button>
                 <!-- 右边工具栏 -->
                 <!-- 编辑弹框 -->
                 <div id="windows">
@@ -89,7 +94,7 @@
                     >
                       <el-button
                         type="primary"
-                        @click="open = false"
+                        @click="updateComment()"
                       >确 定</el-button>
                       <el-button @click="open = false">取 消</el-button>
 
@@ -102,6 +107,7 @@
                   confirmButtonText='好的'
                   cancelButtonText='取消'
                   iconColor="red"
+                  @onConfirm="deleteComment(i)"
                   title="删除留言将与评论一并删除，确定吗？"
                 >
                   <el-button
@@ -112,12 +118,16 @@
                 <el-button
                   style="margin-right:5px"
                   type="text"
-                  @click="open=true"
+                  @click="handleOpenEdit(i)"
                 >编辑</el-button>
 
               </el-row>
               <!-- 评论展示框 -->
-              <!-- <Comment v-bind:show2="show2"></Comment> -->
+              <Comment
+                :replyList="comment.replies"
+                :show2="openState[comment._id]"
+                :commentId="comment._id"
+              ></Comment>
             </el-card>
           </el-col>
         </el-row>
@@ -127,9 +137,10 @@
           justify="center"
         >
           <el-pagination
-            page-size:6
+            @current-change="handleCurrentChange"
+            :page-size="pageSize"
             layout="prev, pager, next"
-            :total="headings.length"
+            :total="count"
           >
           </el-pagination>
         </el-row>
@@ -146,45 +157,115 @@
 import Header from "../components/Header";
 import Main from "../components/Main";
 import EditWindow from "../components/Edit";
+import Comment from "../components/Comment";
+import api from "../axios/api";
+import { Message } from "element-ui";
 
 export default {
   data() {
     return {
-      headings: [
-        "HILL",
-        "xujunfeng",
-        "的说法是",
-        "hlll",
-        "5Heading",
-        "6Heading"
-      ],
-      msg: [
-        "longlonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglonglong",
-        "shortshort"
-      ],
+      commentList: [],
       show2: true,
       open: false,
+      // 当前操作的留言索引
+      activeIndex: 0,
       text: "",
+      pageSize: 6,
+      pageNum: 1,
+      count: 0,
+      openState: {},
       search: "",
-      url:
-        "https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg"
     };
   },
   name: "MyMsg",
   components: {
     Header,
     Main,
-    EditWindow
+    EditWindow,
+    Comment,
   },
   methods: {
+    handleCurrentChange(val) {
+      this.pageNum = val;
+      this.getCommentList();
+    },
     handleClose(done) {
       this.$confirm("您还没有编辑完成，确认关闭？")
-        .then(_ => {
+        .then((_) => {
           done();
         })
-        .catch(_ => {});
-    }
-  }
+        .catch((_) => {});
+    },
+    getCommentList() {
+      const params = {
+          pageSize: this.pageSize,
+          pageNum: this.pageNum,
+          
+      };
+      if (this.search) {
+        params.search = this.search;
+      }
+      this.axios({
+        method: "get",
+        url: "/api/comment/myComment",
+        params,
+      })
+        .then((res) => {
+          const data = res.data;
+          this.commentList = data.data.list;
+          this.count = data.data.count;
+        })
+        .catch((err) => {
+          Message({
+            message: "获取留言失败",
+            type: "error",
+          });
+        });
+    },
+    showComment(index) {
+      this.currentIndex = index;
+      const comment = this.commentList[index];
+      const value = this.openState[comment._id];
+      this.$set(this.openState, comment._id, !value);
+    },
+    handleOpenEdit(index) {
+      this.activeIndex = index;
+      (this.open = true), (this.text = this.commentList[index].context);
+    },
+    updateComment() {
+      const commentId = this.commentList[this.activeIndex]._id;
+      api
+        .updateComment({
+          commentId,
+          context: this.text,
+        })
+        .then((res) => {
+          Message.success("更新留言成功");
+          this.open = false;
+          this.getCommentList();
+        });
+    },
+    deleteComment(i) {
+      this.activeIndex = i;
+      const commentId = this.commentList[this.activeIndex]._id;
+      api
+        .deleteComment({
+          commentId,
+        })
+        .then((res) => {
+          Message.success("删除留言成功");
+          this.getCommentList();
+        });
+    },
+  },
+  created() {
+    // this.openState = Array(10).fill(false);
+    this.getCommentList();
+  },
+  watch: {
+    // 如果路由有变化，会再次执行该方法
+    $route: "getCommentList",
+  },
 };
 </script>
 
