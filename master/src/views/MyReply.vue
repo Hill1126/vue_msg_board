@@ -20,29 +20,29 @@
       <el-row class="table-row">
         <!-- <el-col span="24"> -->
         <el-table
-          :data="tableData"
+          :data="replyList"
           border
         >
           <el-table-column
-            prop="date"
+            prop="createTime"
             label="回复时间"
             width="150"
           >
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="toUser"
             label="回复对象"
             width="150"
           >
           </el-table-column>
           <el-table-column
-            prop="address"
+            prop="context"
             label="回复内容"
           >
           </el-table-column>
           <!-- 原文内容 -->
           <el-table-column
-            prop="comment"
+            prop="sourceContext"
             label="原文内容"
             width="150"
           >
@@ -83,8 +83,9 @@
 
         <el-pagination
           background
+          :page-size="pageSize"
           layout="prev, pager, next"
-          :total="50"
+          :total="count"
         >
         </el-pagination>
       </el-row>
@@ -123,73 +124,37 @@
 
 <script>
 import HeaderBar from "../components/Header";
+import api from "../axios/api";
 
 export default {
   name: "Reply",
   components: {
-    HeaderBar
+    HeaderBar,
   },
   data() {
     return {
+      count: 0,
+      pageNum: 1,
+      pageSize: 10,
       open: false,
       text: "2342342352453",
       search: "",
       activeNames: ["1"],
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-          comment:
-            "dasdas江路 1517 弄上海市普陀区金沙江路 1517 弄上江路 1517 弄上海市普陀区金沙江路 1517 弄上江路 1517 弄上海市普陀区金沙江路 1517 弄上江路 1517 弄上海市普陀区金沙江路 1517 弄上江路 1517 弄上海市普陀区金沙江路 1517 弄上d"
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address:
-            "上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄上海市普陀区金沙江路 1517 弄",
-          comment: "dasdasd"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄"
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
-        }
 
-      ]
+      replyList: [],
     };
   },
   methods: {
+    getMyReplyCommentList() {
+      
+      const pageSize = this.pageSize;
+      const pageNum = this.pageNum;
+      api.getMyReplyCommentList({ pageSize, pageNum }).then((res) => {
+        //获取数据，赋值给commentList
+        this.replyList = res.data;
+      });
+    },
+
     handleChange(val) {
       console.log(val);
     },
@@ -203,12 +168,20 @@ export default {
     },
     handleClose(done) {
       this.$confirm("您还没有编辑完成，确认关闭？")
-        .then(_ => {
+        .then((_) => {
           done();
         })
-        .catch(_ => {});
-    }
-  }
+        .catch((_) => {});
+    },
+  },
+  created() {
+    // this.openState = Array(10).fill(false);
+    this.getMyReplyCommentList();
+  },
+  watch: {
+    // 如果路由有变化，会再次执行该方法
+    $route: "getMyReplyCommentList",
+  },
 };
 </script>
 

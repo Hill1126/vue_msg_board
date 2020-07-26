@@ -71,7 +71,7 @@ export default {
         });
     },
     // 删除留言
-    deleteComment(value){
+    deleteComment(value) {
         return new Promise((resolve, reject) => {
             const { commentId } = value;
             instance.axios({
@@ -81,12 +81,25 @@ export default {
         });
     },
     // 删除回复
-    deleteReply(value){
+    deleteReply(value) {
         return new Promise((resolve, reject) => {
-            const { commentId,replyId } = value;
+            const { commentId, replyId } = value;
             instance.axios({
                 method: "delete",
                 url: `/api/reply/${commentId}/${replyId}`,
+            }).then(res => resolve(res));
+        });
+    },
+    getMyReplyCommentList(value) {
+        return new Promise((resolve, reject) => {
+            const { pageSize= 10, pageNum=1 } = value;
+            instance.axios({
+                method: "get",
+                url: `/api/reply`,
+                params: {
+                    pageSize :10,
+                    pageNum:1,
+                }
             }).then(res => resolve(res));
         });
     }
